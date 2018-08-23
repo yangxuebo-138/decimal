@@ -674,7 +674,12 @@ func (d Decimal) Rat() *big.Rat {
 	if d.exp <= 0 {
 		// NOTE(vadim): must negate after casting to prevent int32 overflow
 		denom := new(big.Int).Exp(tenInt, big.NewInt(-int64(d.exp)), nil)
-		return new(big.Rat).SetFrac(d.value, denom)
+		floatv, err := strconv.ParseFloat(d.String(), 64)
+		if err != nil {
+		    return new(big.Rat).SetFrac(d.value, denom)
+		}
+		return new(big.Rat).SetFloat64(floatv)
+		//return new(big.Rat).SetFrac(d.value, denom)
 	}
 
 	mul := new(big.Int).Exp(tenInt, big.NewInt(int64(d.exp)), nil)
